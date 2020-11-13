@@ -16,7 +16,7 @@ public class Operations<T extends Comparable<T>> {
     private boolean flag;   // Tracks if the last element was added correctly or not.
     private int vertices;
 
-    Operations() {
+    public Operations() {
         this.root = new Node();
         this.size = 0;
     }
