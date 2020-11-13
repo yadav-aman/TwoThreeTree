@@ -610,10 +610,10 @@ public class Operations<T extends Comparable<T>> {
         vertices(n.leftChild);
         vertices(n.middleChild);
         vertices(n.rightChild);
+        if(n==root){
+            vertices++;
+        }
         if (! n.isLeaf()){
-            if(n==root){
-                vertices++;
-            }
             if(n.leftChild != null)
                 vertices++;
             if(n.middleChild != null)
