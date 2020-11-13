@@ -622,7 +622,7 @@ public class Operations<T extends Comparable<T>> {
                 vertices++;
         }
     }
-    // public function to get the no of verticses
+    // public function to get the no of vertices
     public int getVertices(){
         vertices = 0;
         vertices(root);
