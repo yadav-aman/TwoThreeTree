@@ -4,10 +4,7 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollBar;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -36,7 +33,7 @@ public class TwoThreeTreeApp extends Application{
         BorderPane treePane = new BorderPane();
         // set Tree pane
         treePane.setCenter(viewTree);
-        // Create HBox
+        // Create HBox for controls
         HBox controls = new HBox(10);
         // text field to insert keys
         TextField keyText =new TextField();
@@ -61,6 +58,23 @@ public class TwoThreeTreeApp extends Application{
                 keyText.setText("");
                 tree.add(key);
                 viewTree.displayTree();
+            }
+            catch (NumberFormatException ex){
+                System.out.println("Wrong format provided");
+            }
+        });
+
+        delete.setOnMouseClicked(e->{
+            try{
+                int key =Integer.parseInt(keyText.getText());
+                keyText.setText("");
+                if (tree.isEmpty()){
+                    System.out.println("Tree is empty");
+                }
+                else{
+                    tree.remove(key);
+                    viewTree.displayTree();
+                }
             }
             catch (NumberFormatException ex){
                 System.out.println("Wrong format provided");
@@ -147,18 +161,23 @@ public class TwoThreeTreeApp extends Application{
             if (tree.getRoot() != null){
                 displayTree(tree.getRoot(),getWidth()/2,0,getWidth()/4, 60);
             }
+            Text status = new Text(getWidth()/4,getHeight()-20,"Height: " + tree.height() + ", Vertices: " + tree.getVertices());
+            status.setFont(Font.font(Font.getDefault().toString(), FontWeight.BOLD,20));
+            getChildren().add(status);
+
         }
         private void displayTree(Node<Integer> n, double w, double h, double horizontalGap, double verticalGap){
             if(n == null)
                 return;
-            displayTree(n.getLeftNode(),w- horizontalGap,h+verticalGap, horizontalGap/3, verticalGap);
+            displayTree(n.getLeftNode(),w-horizontalGap,h+verticalGap, horizontalGap/3, verticalGap);
             if(n.getRightElement() != null)
                 displayTree(n.getMidNode(),w+15,h+verticalGap, horizontalGap/3, verticalGap);
             else
-                displayTree(n.getMidNode(),w+ horizontalGap,h+verticalGap, horizontalGap/3,verticalGap);
-            displayTree(n.getRightNode(),w+ horizontalGap,h+verticalGap, horizontalGap/3,verticalGap);
+                displayTree(n.getMidNode(),w+horizontalGap,h+verticalGap, horizontalGap/3,verticalGap);
+            displayTree(n.getRightNode(),w+horizontalGap,h+verticalGap, horizontalGap/3,verticalGap);
             if(n.is2Node()){
-                draw2Node(n.getLeftElement().toString(),w,h,n.isLeaf(), horizontalGap);
+                if(n.getLeftElement() != null)
+                    draw2Node(n.getLeftElement().toString(),w,h,n.isLeaf(), horizontalGap);
             }
             if(n.is3Node()){
                 draw3Node(n.getLeftElement().toString(),n.getRightElement().toString(),w,h,n.isLeaf(),horizontalGap);
