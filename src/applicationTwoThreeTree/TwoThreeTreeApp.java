@@ -5,6 +5,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollBar;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -88,7 +90,7 @@ public class TwoThreeTreeApp extends Application{
             this.tree = tree;
         }
 
-        private void draw2Node(String key, double xCord, double yCord, boolean isLeaf){
+        private void draw2Node(String key, double xCord, double yCord, boolean isLeaf, double horizontalGap){
             Rectangle box = new Rectangle(xCord,yCord,30,30);
             box.setFill(Color.LIGHTGREEN);
             box.setArcHeight(15);
@@ -103,12 +105,12 @@ public class TwoThreeTreeApp extends Application{
             }
             else{
                 // if not leaf node then draw node and lines
-                Line leftLine = new Line(xCord,yCord+25,xCord/2 + 15,yCord+60);
-                Line rightLine = new Line(xCord+30,yCord+25,1.5*xCord - 15,yCord+60);
+                Line leftLine = new Line(xCord,yCord+25,xCord - horizontalGap + 15,yCord+60);
+                Line rightLine = new Line(xCord+30,yCord+25,xCord + horizontalGap + 15,yCord+60);
                 getChildren().addAll(box,keyText,leftLine,rightLine);
             }
         }
-        private void draw3Node(String key1, String key2, double xCord, double yCord, boolean isLeaf){
+        private void draw3Node(String key1, String key2, double xCord, double yCord, boolean isLeaf, double horizontalGap){
             Rectangle box1 = new Rectangle(xCord,yCord,30,30);
             Rectangle box2 = new Rectangle(xCord+30,yCord,30,30);
             box1.setFill(Color.RED);
@@ -132,9 +134,9 @@ public class TwoThreeTreeApp extends Application{
             }
             else{
                 // if not leaf node then draw node and lines
-                Line leftLine = new Line(xCord,yCord+25,xCord/2 + 15,yCord+60);
-                Line rightLine = new Line(xCord+60,yCord+25,1.5*xCord+15,yCord+60);
-                Line middleLine = new Line(xCord+30,yCord+30,xCord+15,yCord+60);
+                Line leftLine = new Line(xCord,yCord+25,xCord - horizontalGap + 15,yCord+60);
+                Line rightLine = new Line(xCord+60,yCord+25,xCord+horizontalGap+10,yCord+60);
+                Line middleLine = new Line(xCord+30,yCord+30,xCord+30,yCord+60);
                 this.getChildren().addAll(box1,box2,keyText1,keyText2,leftLine,middleLine,rightLine);
             }
         }
@@ -143,23 +145,23 @@ public class TwoThreeTreeApp extends Application{
             this.getChildren().clear();
             // display tree is root is not null
             if (tree.getRoot() != null){
-                displayTree(tree.getRoot(),getWidth()/2,0,getWidth()/4);
+                displayTree(tree.getRoot(),getWidth()/2,0,getWidth()/4, 60);
             }
         }
-        private void displayTree(Node<Integer> n, double w, double h, double horizontalGap){
+        private void displayTree(Node<Integer> n, double w, double h, double horizontalGap, double verticalGap){
             if(n == null)
                 return;
-            displayTree(n.getLeftNode(),w- horizontalGap,h+60, horizontalGap/2);
+            displayTree(n.getLeftNode(),w- horizontalGap,h+verticalGap, horizontalGap/3, verticalGap);
             if(n.getRightElement() != null)
-                displayTree(n.getMidNode(),w,h+60, horizontalGap/2);
+                displayTree(n.getMidNode(),w+15,h+verticalGap, horizontalGap/3, verticalGap);
             else
-                displayTree(n.getMidNode(),w+ horizontalGap,h+60, horizontalGap/2);
-            displayTree(n.getRightNode(),w+ horizontalGap,h+60, horizontalGap/2);
+                displayTree(n.getMidNode(),w+ horizontalGap,h+verticalGap, horizontalGap/3,verticalGap);
+            displayTree(n.getRightNode(),w+ horizontalGap,h+verticalGap, horizontalGap/3,verticalGap);
             if(n.is2Node()){
-                draw2Node(n.getLeftElement().toString(),w,h,n.isLeaf());
+                draw2Node(n.getLeftElement().toString(),w,h,n.isLeaf(), horizontalGap);
             }
             if(n.is3Node()){
-                draw3Node(n.getLeftElement().toString(),n.getRightElement().toString(),w,h,n.isLeaf());
+                draw3Node(n.getLeftElement().toString(),n.getRightElement().toString(),w,h,n.isLeaf(),horizontalGap);
             }
         }
     }
