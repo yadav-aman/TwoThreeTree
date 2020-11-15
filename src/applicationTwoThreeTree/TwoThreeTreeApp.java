@@ -143,47 +143,18 @@ public class TwoThreeTreeApp extends Application{
             this.getChildren().clear();
             // display tree is root is not null
             if (tree.getRoot() != null){
-                displayTree(tree.getRoot(),getWidth()/2,70);
+                displayTree(tree.getRoot(),getWidth()/2,0,getWidth()/4);
             }
         }
-//        private void displayTree(Node<Integer> root, double w, double h){
-//            System.out.println(root.getLeftNode());
-//            System.out.println(root.getMidNode());
-//            System.out.println(root.getRightElement());
-//            if( root.getLeftNode() != null){
-//                if(root.is2Node()){
-//                    draw2Node(root.getLeftElement().toString(),w,h,root.isLeaf());
-//                }
-//                else{
-//                    draw3Node(root.getLeftElement().toString(),root.getRightElement().toString(),w,h,root.isLeaf());
-//                }
-//                displayTree(root.getLeftNode(),w/2,h+30);
-//            }
-//            if( root.getMidNode() != null){
-//                if(root.is2Node()){
-//                    draw2Node(root.get().toString(),w,h,root.isLeaf());
-//                }
-//                else{
-//                    draw3Node(root.getMidNode().toString(),root.getRightElement().toString(),w,h,root.isLeaf());
-//                }
-//                displayTree(root.getMidNode(),w/2,h+30);
-//            }
-//            if( root.getRightNode() != null){
-//                if(root.is2Node()){
-//                    draw2Node(root.getRightElement().toString(),w,h,root.isLeaf());
-//                }
-//                else{
-//                    draw3Node(root.getRightElement().toString(),root.getRightElement().toString(),w,h,root.isLeaf());
-//                }
-//                displayTree(root.getRightNode(),w/2,h+30);
-//            }
-//        }
-        private void displayTree(Node<Integer> n, double w, double h){
+        private void displayTree(Node<Integer> n, double w, double h, double horizontalGap){
             if(n == null)
                 return;
-            displayTree(n.getLeftNode(),w/2,h+60);
-            displayTree(n.getMidNode(),w,h+60);
-            displayTree(n.getRightNode(),1.5*w,h+60);
+            displayTree(n.getLeftNode(),w- horizontalGap,h+60, horizontalGap/2);
+            if(n.getRightElement() != null)
+                displayTree(n.getMidNode(),w,h+60, horizontalGap/2);
+            else
+                displayTree(n.getMidNode(),w+ horizontalGap,h+60, horizontalGap/2);
+            displayTree(n.getRightNode(),w+ horizontalGap,h+60, horizontalGap/2);
             if(n.is2Node()){
                 draw2Node(n.getLeftElement().toString(),w,h,n.isLeaf());
             }
