@@ -628,4 +628,8 @@ public class Operations<T extends Comparable<T>> {
         vertices(root);
         return vertices;
     }
+
+    public Node getRoot() {
+        return root;
+    }
 }

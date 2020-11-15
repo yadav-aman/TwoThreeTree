@@ -9,10 +9,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import twoThreeTreeAlgo.Node;
 import twoThreeTreeAlgo.Operations;
 
 public class TwoThreeTreeApp extends Application{
@@ -27,7 +31,9 @@ public class TwoThreeTreeApp extends Application{
         // create DrawTree object
         DrawTree viewTree = new DrawTree(tree);
         // creating a border pane
-        BorderPane controlsPane = new BorderPane();
+        BorderPane treePane = new BorderPane();
+        // set Tree pane
+        treePane.setCenter(viewTree);
         // Create HBox
         HBox controls = new HBox(10);
         // text field to insert keys
@@ -38,13 +44,26 @@ public class TwoThreeTreeApp extends Application{
         Button insert = new Button("Insert");
         insert.setStyle("-fx-background-color: #69e597");
         insert.setFont(Font.font(Font.getDefault().toString(), FontWeight.BOLD,10));
+
         Button delete = new Button("Delete");
         delete.setStyle("-fx-background-color: #ee8084;");
         delete.setFont(Font.font(Font.getDefault().toString(), FontWeight.BOLD,10));
+
         Button find = new Button("Search");
         find.setStyle("-fx-background-color: #7982e3");
         find.setFont(Font.font(Font.getDefault().toString(), FontWeight.BOLD,10));
 
+        insert.setOnMouseClicked(e->{
+            try{
+                int key =Integer.parseInt(keyText.getText());
+                keyText.setText("");
+                tree.add(key);
+                viewTree.displayTree();
+            }
+            catch (NumberFormatException ex){
+                System.out.println("Wrong format provided");
+            }
+        });
 
         // position controls
         BorderPane.setMargin(controls,new Insets(15,15,15,15));
@@ -54,8 +73,8 @@ public class TwoThreeTreeApp extends Application{
         enterKey.setFont(Font.font(Font.getDefault().toString(), FontWeight.BOLD,20));
         controls.getChildren().addAll(enterKey,keyText,insert,delete,find);
         // set HBox to the top
-        controlsPane.setTop(controls);
-        Scene scene = new Scene(controlsPane);
+        treePane.setTop(controls);
+        Scene scene = new Scene(treePane);
         primaryStage.setScene(scene);
         // Show Stage
         primaryStage.show();
@@ -67,6 +86,97 @@ public class TwoThreeTreeApp extends Application{
         // constructor
         DrawTree(Operations<Integer> tree){
             this.tree = tree;
+        }
+
+        private void draw2Node(String key, double xCord, double yCord, boolean isLeaf){
+            Rectangle box = new Rectangle(xCord,yCord,30,30);
+            box.setFill(Color.LIGHTGREEN);
+            box.setArcHeight(5);
+            box.setArcWidth(5);
+            Text keyText = new Text(xCord + 10,yCord + 15, key);
+            keyText.setFill(Color.BLACK);
+            keyText.setFont(Font.font(Font.getDefault().toString(), FontWeight.EXTRA_BOLD,15));
+            if (isLeaf)
+            {
+                // if leaf node then draw node only
+                getChildren().addAll(box,keyText);
+            }
+            else{
+                // if not leaf node then draw node and lines
+                Line leftLine = new Line(xCord,yCord+30,xCord/2,yCord+60);
+                Line rightLine = new Line(xCord+30,yCord+30,1.5*xCord,yCord+60);
+                getChildren().addAll(box,keyText,leftLine,rightLine);
+            }
+        }
+        private void draw3Node(String key1, String key2, double xCord, double yCord, boolean isLeaf){
+            Rectangle box1 = new Rectangle(xCord,yCord,30,30);
+            Rectangle box2 = new Rectangle(xCord+30,yCord,30,30);
+            box1.setFill(Color.LIGHTGREEN);
+            box2.setFill(Color.LIGHTGREEN);
+            box1.setArcHeight(5);
+            box1.setArcWidth(5);
+            box2.setArcHeight(5);
+            box2.setArcWidth(5);
+
+            Text keyText1 = new Text(xCord + 10,yCord + 15, key1);
+            keyText1.setFill(Color.BLACK);
+            keyText1.setFont(Font.font(Font.getDefault().toString(), FontWeight.EXTRA_BOLD,15));
+            Text keyText2 = new Text(xCord + 40,yCord + 15, key2);
+            keyText2.setFill(Color.BLACK);
+            keyText2.setFont(Font.font(Font.getDefault().toString(), FontWeight.EXTRA_BOLD,15));
+
+            if (isLeaf)
+            {
+                // if leaf node then draw node only
+                this.getChildren().addAll(box1,box2,keyText1,keyText2);
+            }
+            else{
+                // if not leaf node then draw node and lines
+                Line leftLine = new Line(xCord+30,yCord,xCord/2,yCord+60);
+                Line rightLine = new Line(xCord+30,yCord+30,1.5*xCord,yCord+60);
+                Line middleLine = new Line(xCord+30,yCord+30,xCord,yCord+60);
+                this.getChildren().addAll(box1,box2,keyText1,keyText2,leftLine,middleLine,rightLine);
+            }
+        }
+        public void displayTree(){
+            // first clear the screen
+            this.getChildren().clear();
+            // display tree is root is not null
+            if (tree.getRoot() != null){
+                displayTree(tree.getRoot(),getWidth()/2,70);
+            }
+        }
+        private void displayTree(Node<Integer> root, double w, double h){
+            System.out.println(root.getLeftNode());
+            System.out.println(root.getMidNode());
+            System.out.println(root.getRightElement());
+            if( root.getLeftNode() != null){
+                if(root.is2Node()){
+                    draw2Node(root.getLeftElement().toString(),w,h,root.isLeaf());
+                }
+                else{
+                    draw3Node(root.getLeftElement().toString(),root.getRightElement().toString(),w,h,root.isLeaf());
+                }
+                displayTree(root.getLeftNode(),w/2,h+30);
+            }
+//            if( root.getMidNode() != null){
+//                if(root.is2Node()){
+//                    draw2Node(root.get().toString(),w,h,root.isLeaf());
+//                }
+//                else{
+//                    draw3Node(root.getMidNode().toString(),root.getRightElement().toString(),w,h,root.isLeaf());
+//                }
+//                displayTree(root.getMidNode(),w/2,h+30);
+//            }
+            if( root.getRightNode() != null){
+                if(root.is2Node()){
+                    draw2Node(root.getRightElement().toString(),w,h,root.isLeaf());
+                }
+                else{
+                    draw3Node(root.getRightElement().toString(),root.getRightElement().toString(),w,h,root.isLeaf());
+                }
+                displayTree(root.getRightNode(),w/2,h+30);
+            }
         }
     }
 }
