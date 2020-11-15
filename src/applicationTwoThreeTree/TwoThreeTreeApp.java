@@ -1,4 +1,4 @@
-package application;
+package applicationTwoThreeTree;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -23,6 +24,8 @@ public class TwoThreeTreeApp extends Application{
         primaryStage.setMaximized(true);
         // creating an instance of 2-3 tree
         Operations<Integer> tree = new Operations<>();
+        // create DrawTree object
+        DrawTree viewTree = new DrawTree(tree);
         // creating a border pane
         BorderPane controlsPane = new BorderPane();
         // Create HBox
@@ -56,5 +59,14 @@ public class TwoThreeTreeApp extends Application{
         primaryStage.setScene(scene);
         // Show Stage
         primaryStage.show();
+    }
+
+    //---------------------------INNER CLASS TO DRAW TREE-----------------------------------
+    class DrawTree extends Pane{
+        private Operations<Integer> tree;
+        // constructor
+        DrawTree(Operations<Integer> tree){
+            this.tree = tree;
+        }
     }
 }
