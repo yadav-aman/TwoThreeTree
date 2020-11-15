@@ -14,7 +14,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import twoThreeTreeAlgo.Operations;
 
-public class App extends Application{
+public class TwoThreeTreeApp extends Application{
     @Override
     public void start(Stage primaryStage) throws Exception{
         // Set Title
