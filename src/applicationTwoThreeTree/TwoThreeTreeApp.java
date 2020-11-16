@@ -23,26 +23,24 @@ public class TwoThreeTreeApp extends Application{
     public void start(Stage primaryStage) throws Exception{
         // Set Title
         primaryStage.setTitle("2-3 Tree Visualization");
-        // open app maximised
-        primaryStage.setMaximized(true);
+        primaryStage.setHeight(700);
+        primaryStage.setWidth(1500);
         // creating an instance of 2-3 tree
         Operations<Integer> tree = new Operations<>();
         // create DrawTree object
         DrawTree viewTree = new DrawTree(tree);
         // creating a border pane
         BorderPane treePane = new BorderPane();
-        viewTree.setMinSize(4000,1000);
         // Insert scroll pane
         ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setPrefViewportHeight(treePane.getHeight()/2);
-        scrollPane.setPrefViewportWidth(treePane.getWidth()/2);
+        scrollPane.setPrefViewportHeight(primaryStage.getHeight()/2);
+        scrollPane.setPrefViewportWidth(primaryStage.getWidth()/2);
         scrollPane.setContent(viewTree);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         scrollPane.setPannable(true);
         scrollPane.setFitToHeight(false);
         scrollPane.setFitToWidth(false);
-        scrollPane.setHvalue(scrollPane.getVmax()/2);
         // set Tree pane
         treePane.setCenter(scrollPane);
         // Create HBox for controls
@@ -65,6 +63,14 @@ public class TwoThreeTreeApp extends Application{
         Button find = new Button("Search");
         find.setStyle("-fx-background-color: #7982e3");
         find.setFont(Font.font(Font.getDefault().toString(), FontWeight.BOLD,10));
+
+        Button root = new Button("Root");
+        root.setStyle("-fx-background-color: #d83def");
+        root.setFont(Font.font(Font.getDefault().toString(), FontWeight.BOLD,10));
+
+        Button clear = new Button("Clear");
+        clear.setStyle("-fx-background-color: #f50606");
+        clear.setFont(Font.font(Font.getDefault().toString(), FontWeight.BOLD,10));
 
         insert.setOnMouseClicked(e->{
             try{
@@ -99,13 +105,28 @@ public class TwoThreeTreeApp extends Application{
             }
         });
 
+        root.setOnMouseClicked(e->{
+            scrollPane.setHvalue(scrollPane.getVmax()/2);
+            scrollPane.setVvalue(scrollPane.getHmin());
+        });
+
+        clear.setOnMouseClicked(e->{
+            tree.clear();
+            viewTree.setPrefSize(1300,800);
+            viewTree.displayTree();
+            status.getChildren().clear();
+            status.getChildren().add(viewTree.updateMessage());
+        });
+
         // position controls
         BorderPane.setMargin(controls,new Insets(15,15,15,15));
         controls.setAlignment(Pos.TOP_CENTER);
         // add elements to HBox
         Text enterKey = new Text("Enter Key: ");
         enterKey.setFont(Font.font(Font.getDefault().toString(), FontWeight.BOLD,20));
-        controls.getChildren().addAll(enterKey,keyText,insert,delete,find);
+        Label blankLabel = new Label();
+        blankLabel.setPrefWidth(40);
+        controls.getChildren().addAll(enterKey,keyText,insert,delete,find,root,blankLabel,clear);
         // set HBox to the top
         treePane.setTop(controls);
         // position status
@@ -123,6 +144,7 @@ public class TwoThreeTreeApp extends Application{
         // constructor
         DrawTree(Operations<Integer> tree){
             this.tree = tree;
+            this.setPrefSize(1300,800);
         }
 
         private void draw2Node(String key, double xCord, double yCord, boolean isLeaf, double horizontalGap,double verticalGap){
@@ -178,26 +200,30 @@ public class TwoThreeTreeApp extends Application{
         public void displayTree(){
             // first clear the screen
             this.getChildren().clear();
+            // make space for more nodes
+            if(tree.height()>3){
+                this.setPrefSize(Math.pow(3,tree.height()-3)*1500,1500);
+            }
             // display tree is root is not null
             if (tree.getRoot() != null){
-                displayTree(tree.getRoot(),getWidth()/2,0,getWidth()/3, 60);
+                displayTree(tree.getRoot(),getWidth()/2,5,getWidth()/3, 150);
             }
         }
-        private void displayTree(Node<Integer> n, double w, double h, double horizontalGap, double verticalGap){
+        private void displayTree(Node<Integer> n, double xCord, double yCord, double horizontalGap, double verticalGap){
             if(n == null)
                 return;
-            displayTree(n.getLeftNode(),w-horizontalGap,h+verticalGap, horizontalGap/3, verticalGap*1);
+            displayTree(n.getLeftNode(),xCord-horizontalGap,yCord+verticalGap, horizontalGap/3, verticalGap+20*tree.height());
             if(n.getRightElement() != null)
-                displayTree(n.getMidNode(),w+15,h+verticalGap, horizontalGap/3, verticalGap*1);
+                displayTree(n.getMidNode(),xCord+15,yCord+verticalGap, horizontalGap/3, verticalGap+20*tree.height());
             else
-                displayTree(n.getMidNode(),w+horizontalGap,h+verticalGap, horizontalGap/3,verticalGap*1);
-            displayTree(n.getRightNode(),w+horizontalGap,h+verticalGap, horizontalGap/3,verticalGap*1);
+                displayTree(n.getMidNode(),xCord+horizontalGap,yCord+verticalGap, horizontalGap/3,verticalGap+20*tree.height());
+            displayTree(n.getRightNode(),xCord+horizontalGap,yCord+verticalGap, horizontalGap/3,verticalGap+20*tree.height());
             if(n.is2Node()){
                 if(n.getLeftElement() != null)
-                    draw2Node(n.getLeftElement().toString(),w,h,n.isLeaf(), horizontalGap, verticalGap);
+                    draw2Node(n.getLeftElement().toString(),xCord,yCord,n.isLeaf(), horizontalGap, verticalGap);
             }
             if(n.is3Node()){
-                draw3Node(n.getLeftElement().toString(),n.getRightElement().toString(),w,h,n.isLeaf(),horizontalGap,verticalGap);
+                draw3Node(n.getLeftElement().toString(),n.getRightElement().toString(),xCord,yCord,n.isLeaf(),horizontalGap,verticalGap);
             }
         }
         public Text updateMessage(){
