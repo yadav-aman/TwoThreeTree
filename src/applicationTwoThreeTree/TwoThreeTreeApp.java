@@ -31,8 +31,20 @@ public class TwoThreeTreeApp extends Application{
         DrawTree viewTree = new DrawTree(tree);
         // creating a border pane
         BorderPane treePane = new BorderPane();
+        viewTree.setMinSize(4000,1000);
+        // Insert scroll pane
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setPrefViewportHeight(treePane.getHeight()/2);
+        scrollPane.setPrefViewportWidth(treePane.getWidth()/2);
+        scrollPane.setContent(viewTree);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        scrollPane.setPannable(true);
+        scrollPane.setFitToHeight(false);
+        scrollPane.setFitToWidth(false);
+        scrollPane.setHvalue(scrollPane.getVmax()/2);
         // set Tree pane
-        treePane.setCenter(viewTree);
+        treePane.setCenter(scrollPane);
         // Create HBox for controls
         HBox controls = new HBox(10);
         // HBox for Height and vertices
@@ -158,7 +170,7 @@ public class TwoThreeTreeApp extends Application{
             else{
                 // if not leaf node then draw node and lines
                 Line leftLine = new Line(xCord,yCord+25,xCord - horizontalGap + 15,yCord+60);
-                Line rightLine = new Line(xCord+60,yCord+25,xCord+horizontalGap+10,yCord+60);
+                Line rightLine = new Line(xCord+60,yCord+25,xCord+horizontalGap+15,yCord+60);
                 Line middleLine = new Line(xCord+30,yCord+30,xCord+30,yCord+60);
                 this.getChildren().addAll(box1,box2,keyText1,keyText2,leftLine,middleLine,rightLine);
             }
