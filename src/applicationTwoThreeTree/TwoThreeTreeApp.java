@@ -35,6 +35,8 @@ public class TwoThreeTreeApp extends Application{
         treePane.setCenter(viewTree);
         // Create HBox for controls
         HBox controls = new HBox(10);
+        // HBox for Height and vertices
+        HBox status = new HBox();
         // text field to insert keys
         TextField keyText =new TextField();
         keyText.setPrefWidth(50);
@@ -58,6 +60,8 @@ public class TwoThreeTreeApp extends Application{
                 keyText.setText("");
                 tree.add(key);
                 viewTree.displayTree();
+                status.getChildren().clear();
+                status.getChildren().add(viewTree.updateMessage());
             }
             catch (NumberFormatException ex){
                 System.out.println("Wrong format provided");
@@ -74,6 +78,8 @@ public class TwoThreeTreeApp extends Application{
                 else{
                     tree.remove(key);
                     viewTree.displayTree();
+                    status.getChildren().clear();
+                    status.getChildren().add(viewTree.updateMessage());
                 }
             }
             catch (NumberFormatException ex){
@@ -90,6 +96,9 @@ public class TwoThreeTreeApp extends Application{
         controls.getChildren().addAll(enterKey,keyText,insert,delete,find);
         // set HBox to the top
         treePane.setTop(controls);
+        // position status
+        status.setAlignment(Pos.BOTTOM_CENTER);
+        treePane.setBottom(status);
         Scene scene = new Scene(treePane);
         primaryStage.setScene(scene);
         // Show Stage
@@ -161,10 +170,6 @@ public class TwoThreeTreeApp extends Application{
             if (tree.getRoot() != null){
                 displayTree(tree.getRoot(),getWidth()/2,0,getWidth()/4, 60);
             }
-            Text status = new Text(getWidth()/4,getHeight()-20,"Height: " + tree.height() + ", Vertices: " + tree.getVertices());
-            status.setFont(Font.font(Font.getDefault().toString(), FontWeight.BOLD,20));
-            getChildren().add(status);
-
         }
         private void displayTree(Node<Integer> n, double w, double h, double horizontalGap, double verticalGap){
             if(n == null)
@@ -182,6 +187,11 @@ public class TwoThreeTreeApp extends Application{
             if(n.is3Node()){
                 draw3Node(n.getLeftElement().toString(),n.getRightElement().toString(),w,h,n.isLeaf(),horizontalGap);
             }
+        }
+        public Text updateMessage(){
+            Text message = new Text("Height: " + tree.height() + ", Vertices: " + tree.getVertices());
+            message.setFont(Font.font(Font.getDefault().toString(), FontWeight.BOLD,20));
+            return  message;
         }
     }
 }
