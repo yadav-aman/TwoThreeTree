@@ -179,19 +179,20 @@ public class TwoThreeTreeApp extends Application{
 
         //draw nodes
         private void draw2Node(String key, double xCord, double yCord, boolean isLeaf, double horizontalGap,double verticalGap, String keyToCheck) {
-            Rectangle box = new Rectangle(xCord, yCord, 30, 30);
+            Rectangle box = new Rectangle(xCord, yCord, 50, 50);
             if (key.equals(keyToCheck)){
                 box.setFill(Color.DARKORANGE);
                 box.setStroke(Color.DARKRED);
             }
             else {
                 box.setFill(Color.LIGHTGREEN);
+                box.setStroke(Color.BLACK);
             }
             box.setArcHeight(15);
             box.setArcWidth(15);
-            Text keyText = new Text(xCord + 2,yCord + 18, key);
+            Text keyText = new Text(xCord + 5,yCord + 38, key);
             keyText.setFill(Color.BLACK);
-            keyText.setFont(Font.font(Font.getDefault().toString(), FontWeight.EXTRA_BOLD,15));
+            keyText.setFont(Font.font(Font.getDefault().toString(), FontWeight.EXTRA_BOLD,25));
             if (isLeaf)
             {
                 // if leaf node then draw node only
@@ -199,37 +200,41 @@ public class TwoThreeTreeApp extends Application{
             }
             else{
                 // if not leaf node then draw node and lines
-                Line leftLine = new Line(xCord,yCord+25,xCord - horizontalGap + 15,yCord+verticalGap);
-                Line rightLine = new Line(xCord+30,yCord+25,xCord + horizontalGap + 15,yCord+verticalGap);
+                Line leftLine = new Line(xCord,yCord+45,xCord - horizontalGap + 25,yCord+verticalGap);
+                Line rightLine = new Line(xCord+50,yCord+45,xCord + horizontalGap + 25,yCord+verticalGap);
+                leftLine.setStrokeWidth(4);
+                rightLine.setStrokeWidth(4);
                 getChildren().addAll(box,keyText,leftLine,rightLine);
             }
         }
         private void draw3Node(String key1, String key2, double xCord, double yCord, boolean isLeaf, double horizontalGap, double verticalGap, String keyToCheck){
-            Rectangle box1 = new Rectangle(xCord,yCord,30,30);
-            Rectangle box2 = new Rectangle(xCord+30,yCord,30,30);
+            Rectangle box1 = new Rectangle(xCord,yCord,50,50);
+            Rectangle box2 = new Rectangle(xCord+50,yCord,50,50);
             if(key1.equals(keyToCheck)) {
                 box1.setFill(Color.DARKORANGE);
                 box1.setStroke(Color.DARKRED);
             } else {
                 box1.setFill(Color.LIGHTGREEN);
+                box1.setStroke(Color.BLACK);
             }
             if(key2.equals(keyToCheck)) {
                 box2.setFill(Color.DARKORANGE);
                 box2.setStroke(Color.DARKRED);
             } else {
                 box2.setFill(Color.LIGHTGREEN);
+                box2.setStroke(Color.BLACK);
             }
             box1.setArcHeight(15);
             box1.setArcWidth(15);
             box2.setArcHeight(15);
             box2.setArcWidth(15);
 
-            Text keyText1 = new Text(xCord + 2,yCord + 18, key1);
+            Text keyText1 = new Text(xCord + 5,yCord + 38, key1);
             keyText1.setFill(Color.BLACK);
-            keyText1.setFont(Font.font(Font.getDefault().toString(), FontWeight.EXTRA_BOLD,15));
-            Text keyText2 = new Text(xCord + 32,yCord + 18, key2);
+            keyText1.setFont(Font.font(Font.getDefault().toString(), FontWeight.EXTRA_BOLD,25));
+            Text keyText2 = new Text(xCord + 55,yCord + 38, key2);
             keyText2.setFill(Color.BLACK);
-            keyText2.setFont(Font.font(Font.getDefault().toString(), FontWeight.EXTRA_BOLD,15));
+            keyText2.setFont(Font.font(Font.getDefault().toString(), FontWeight.EXTRA_BOLD,25));
 
             if (isLeaf)
             {
@@ -238,9 +243,12 @@ public class TwoThreeTreeApp extends Application{
             }
             else{
                 // if not leaf node then draw node and lines
-                Line leftLine = new Line(xCord,yCord+25,xCord - horizontalGap + 15,yCord+verticalGap);
-                Line rightLine = new Line(xCord+60,yCord+25,xCord+horizontalGap+15,yCord+verticalGap);
-                Line middleLine = new Line(xCord+30,yCord+30,xCord+30,yCord+verticalGap);
+                Line leftLine = new Line(xCord,yCord+45,xCord - horizontalGap + 45,yCord+verticalGap);
+                Line rightLine = new Line(xCord+100,yCord+45,xCord+horizontalGap+25,yCord+verticalGap);
+                Line middleLine = new Line(xCord+50,yCord+50,xCord+50,yCord+verticalGap);
+                leftLine.setStrokeWidth(4);
+                rightLine.setStrokeWidth(4);
+                middleLine.setStrokeWidth(4);
                 this.getChildren().addAll(box1,box2,keyText1,keyText2,leftLine,middleLine,rightLine);
             }
         }
@@ -263,7 +271,7 @@ public class TwoThreeTreeApp extends Application{
                 return;
             displayTree(n.getLeftNode(),xCord-horizontalGap,yCord+verticalGap, horizontalGap/3, verticalGap+1*treeHeight,treeHeight, key);
             if(n.getRightElement() != null)
-                displayTree(n.getMidNode(),xCord+15,yCord+verticalGap, horizontalGap/3, verticalGap+1*treeHeight,treeHeight, key);
+                displayTree(n.getMidNode(),xCord+25,yCord+verticalGap, horizontalGap/3, verticalGap+1*treeHeight,treeHeight, key);
             else
                 displayTree(n.getMidNode(),xCord+horizontalGap,yCord+verticalGap, horizontalGap/3,verticalGap+1*treeHeight,treeHeight, key);
             displayTree(n.getRightNode(),xCord+horizontalGap,yCord+verticalGap, horizontalGap/3,verticalGap+1*treeHeight,treeHeight, key);
@@ -282,6 +290,7 @@ public class TwoThreeTreeApp extends Application{
             return  message;
         }
     }
+    // source - https://stackoverflow.com/questions/39827911/javafx-8-scaling-zooming-scrollpane-relative-to-mouse-position?noredirect=1&lq=1
     class ZoomableScrollPane extends ScrollPane {
         private double scaleValue = 0.7;
         private double zoomIntensity = 0.02;
