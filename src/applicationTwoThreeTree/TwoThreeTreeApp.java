@@ -77,7 +77,7 @@ public class TwoThreeTreeApp extends Application{
                 int key =Integer.parseInt(keyText.getText());
                 keyText.setText( key+5+"");
                 tree.add(key);
-                viewTree.displayTree();
+                viewTree.displayTree(null);
                 status.getChildren().clear();
                 status.getChildren().add(viewTree.updateMessage());
             }
@@ -95,7 +95,7 @@ public class TwoThreeTreeApp extends Application{
                 }
                 else{
                     tree.remove(key);
-                    viewTree.displayTree();
+                    viewTree.displayTree(null);
                     status.getChildren().clear();
                     status.getChildren().add(viewTree.updateMessage());
                 }
@@ -113,9 +113,24 @@ public class TwoThreeTreeApp extends Application{
         clear.setOnMouseClicked(e->{
             tree.clear();
             viewTree.setPrefSize(1300,800);
-            viewTree.displayTree();
+            viewTree.displayTree(null);
             status.getChildren().clear();
             status.getChildren().add(viewTree.updateMessage());
+        });
+
+        find.setOnMouseClicked(e->{
+            try {
+                String key = keyText.getText();
+                keyText.setText("");
+                if (!tree.search(Integer.parseInt(key))) {
+                    System.out.println("No such item in the tree");
+                } else {
+                    viewTree.displayTree(key);
+                }
+            }
+            catch(NumberFormatException ex){
+                System.out.println("Wrong format provided");
+            }
         });
 
         // position controls
@@ -147,9 +162,16 @@ public class TwoThreeTreeApp extends Application{
             this.setPrefSize(1300,800);
         }
 
-        private void draw2Node(String key, double xCord, double yCord, boolean isLeaf, double horizontalGap,double verticalGap){
-            Rectangle box = new Rectangle(xCord,yCord,30,30);
-            box.setFill(Color.LIGHTGREEN);
+        //draw nodes
+        private void draw2Node(String key, double xCord, double yCord, boolean isLeaf, double horizontalGap,double verticalGap, String keyToCheck) {
+            Rectangle box = new Rectangle(xCord, yCord, 30, 30);
+            if (key.equals(keyToCheck)){
+                box.setFill(Color.DARKORANGE);
+                box.setStroke(Color.DARKRED);
+            }
+            else {
+                box.setFill(Color.LIGHTGREEN);
+            }
             box.setArcHeight(15);
             box.setArcWidth(15);
             Text keyText = new Text(xCord + 2,yCord + 18, key);
@@ -167,11 +189,21 @@ public class TwoThreeTreeApp extends Application{
                 getChildren().addAll(box,keyText,leftLine,rightLine);
             }
         }
-        private void draw3Node(String key1, String key2, double xCord, double yCord, boolean isLeaf, double horizontalGap, double verticalGap){
+        private void draw3Node(String key1, String key2, double xCord, double yCord, boolean isLeaf, double horizontalGap, double verticalGap, String keyToCheck){
             Rectangle box1 = new Rectangle(xCord,yCord,30,30);
             Rectangle box2 = new Rectangle(xCord+30,yCord,30,30);
-            box1.setFill(Color.RED);
-            box2.setFill(Color.BLUE);
+            if(key1.equals(keyToCheck)) {
+                box1.setFill(Color.DARKORANGE);
+                box1.setStroke(Color.DARKRED);
+            } else {
+                box1.setFill(Color.LIGHTGREEN);
+            }
+            if(key2.equals(keyToCheck)) {
+                box2.setFill(Color.DARKORANGE);
+                box2.setStroke(Color.DARKRED);
+            } else {
+                box2.setFill(Color.LIGHTGREEN);
+            }
             box1.setArcHeight(15);
             box1.setArcWidth(15);
             box2.setArcHeight(15);
@@ -197,35 +229,38 @@ public class TwoThreeTreeApp extends Application{
                 this.getChildren().addAll(box1,box2,keyText1,keyText2,leftLine,middleLine,rightLine);
             }
         }
-        public void displayTree(){
+
+        public void displayTree(String key){
             // first clear the screen
             this.getChildren().clear();
+            double treeHeight = tree.height();
             // make space for more nodes
             if(tree.height()>3){
-                this.setPrefSize(Math.pow(3,tree.height()-3)*1500,1500);
+                this.setPrefSize((750*(1-Math.pow(0.5, treeHeight-1))/(0.5))+1500,1500);
             }
             // display tree is root is not null
             if (tree.getRoot() != null){
-                displayTree(tree.getRoot(),getWidth()/2,5,getWidth()/3, 150);
+                displayTree(tree.getRoot(),getWidth()/2,5,getWidth()/3, 150,treeHeight, key);
             }
         }
-        private void displayTree(Node<Integer> n, double xCord, double yCord, double horizontalGap, double verticalGap){
+        private void displayTree(Node<Integer> n, double xCord, double yCord, double horizontalGap, double verticalGap,double treeHeight, String key){
             if(n == null)
                 return;
-            displayTree(n.getLeftNode(),xCord-horizontalGap,yCord+verticalGap, horizontalGap/3, verticalGap+20*tree.height());
+            displayTree(n.getLeftNode(),xCord-horizontalGap,yCord+verticalGap, horizontalGap/3, verticalGap+1*treeHeight,treeHeight, key);
             if(n.getRightElement() != null)
-                displayTree(n.getMidNode(),xCord+15,yCord+verticalGap, horizontalGap/3, verticalGap+20*tree.height());
+                displayTree(n.getMidNode(),xCord+15,yCord+verticalGap, horizontalGap/3, verticalGap+1*treeHeight,treeHeight, key);
             else
-                displayTree(n.getMidNode(),xCord+horizontalGap,yCord+verticalGap, horizontalGap/3,verticalGap+20*tree.height());
-            displayTree(n.getRightNode(),xCord+horizontalGap,yCord+verticalGap, horizontalGap/3,verticalGap+20*tree.height());
+                displayTree(n.getMidNode(),xCord+horizontalGap,yCord+verticalGap, horizontalGap/3,verticalGap+1*treeHeight,treeHeight, key);
+            displayTree(n.getRightNode(),xCord+horizontalGap,yCord+verticalGap, horizontalGap/3,verticalGap+1*treeHeight,treeHeight, key);
             if(n.is2Node()){
                 if(n.getLeftElement() != null)
-                    draw2Node(n.getLeftElement().toString(),xCord,yCord,n.isLeaf(), horizontalGap, verticalGap);
+                    draw2Node(n.getLeftElement().toString(),xCord,yCord,n.isLeaf(), horizontalGap, verticalGap, key);
             }
             if(n.is3Node()){
-                draw3Node(n.getLeftElement().toString(),n.getRightElement().toString(),xCord,yCord,n.isLeaf(),horizontalGap,verticalGap);
+                draw3Node(n.getLeftElement().toString(),n.getRightElement().toString(),xCord,yCord,n.isLeaf(),horizontalGap,verticalGap, key);
             }
         }
+
         public Text updateMessage(){
             Text message = new Text("Height: " + tree.height() + ", Vertices: " + tree.getVertices());
             message.setFont(Font.font(Font.getDefault().toString(), FontWeight.BOLD,20));
