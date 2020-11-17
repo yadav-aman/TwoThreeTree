@@ -76,10 +76,17 @@ public class TwoThreeTreeApp extends Application{
             try{
                 int key =Integer.parseInt(keyText.getText());
                 keyText.setText( key+5+"");
+                boolean isExist = false;
+                if(!tree.isEmpty()){
+                    isExist = tree.search(key);
+                }
                 tree.add(key);
                 viewTree.displayTree(null);
                 status.getChildren().clear();
-                status.getChildren().add(viewTree.updateMessage());
+                if(isExist)
+                    status.getChildren().add(viewTree.updateMessage(key + " is already in the tree"));
+                else
+                    status.getChildren().add(viewTree.updateMessage(key + " is added"));
             }
             catch (NumberFormatException ex){
                 System.out.println("Wrong format provided");
@@ -90,14 +97,20 @@ public class TwoThreeTreeApp extends Application{
             try{
                 int key =Integer.parseInt(keyText.getText());
                 keyText.setText("");
+                boolean isExist = tree.search(key);
                 if (tree.isEmpty()){
-                    System.out.println("Tree is empty");
+                    viewTree.displayTree(null);
+                    status.getChildren().clear();
+                    status.getChildren().add(viewTree.updateMessage("Tree is empty"));
                 }
                 else{
                     tree.remove(key);
                     viewTree.displayTree(null);
                     status.getChildren().clear();
-                    status.getChildren().add(viewTree.updateMessage());
+                    if(isExist)
+                        status.getChildren().add(viewTree.updateMessage(key + " is deleted"));
+                    else
+                        status.getChildren().add(viewTree.updateMessage(key + " is not in the tree"));
                 }
             }
             catch (NumberFormatException ex){
@@ -115,17 +128,23 @@ public class TwoThreeTreeApp extends Application{
             viewTree.setPrefSize(1300,800);
             viewTree.displayTree(null);
             status.getChildren().clear();
-            status.getChildren().add(viewTree.updateMessage());
+            status.getChildren().add(viewTree.updateMessage("Tree is cleared"));
         });
 
         find.setOnMouseClicked(e->{
             try {
                 String key = keyText.getText();
                 keyText.setText("");
+
                 if (!tree.search(Integer.parseInt(key))) {
-                    System.out.println("No such item in the tree");
-                } else {
+                    viewTree.displayTree(null);
+                    status.getChildren().clear();
+                    status.getChildren().add(viewTree.updateMessage(key + " not found"));
+                }
+                else {
                     viewTree.displayTree(key);
+                    status.getChildren().clear();
+                    status.getChildren().add(viewTree.updateMessage(key + " found"));
                 }
             }
             catch(NumberFormatException ex){
@@ -261,8 +280,8 @@ public class TwoThreeTreeApp extends Application{
             }
         }
 
-        public Text updateMessage(){
-            Text message = new Text("Height: " + tree.height() + ", Vertices: " + tree.getVertices());
+        public Text updateMessage(String msg){
+            Text message = new Text("Height: " + tree.height() + ", Vertices: " + tree.getVertices()+"\t\t Status: "+ msg);
             message.setFont(Font.font(Font.getDefault().toString(), FontWeight.BOLD,20));
             return  message;
         }
