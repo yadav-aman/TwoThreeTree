@@ -17,7 +17,7 @@ public class Operations<T extends Comparable<T>> {
     private int vertices;
 
     public Operations() {
-        this.root = new Node();
+        this.root = null;
         this.size = 0;
     }
 
