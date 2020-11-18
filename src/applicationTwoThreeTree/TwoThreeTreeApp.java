@@ -1,13 +1,17 @@
 package applicationTwoThreeTree;
 
 import javafx.application.Application;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
@@ -32,15 +36,7 @@ public class TwoThreeTreeApp extends Application{
         // creating a border pane
         BorderPane treePane = new BorderPane();
         // Insert scroll pane
-        ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setPrefViewportHeight(primaryStage.getHeight()/2);
-        scrollPane.setPrefViewportWidth(primaryStage.getWidth()/2);
-        scrollPane.setContent(viewTree);
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-        scrollPane.setPannable(true);
-        scrollPane.setFitToHeight(false);
-        scrollPane.setFitToWidth(false);
+        ZoomableScrollPane scrollPane = new ZoomableScrollPane(viewTree);
         // set Tree pane
         treePane.setCenter(scrollPane);
         // Create HBox for controls
@@ -284,6 +280,74 @@ public class TwoThreeTreeApp extends Application{
             Text message = new Text("Height: " + tree.height() + ", Vertices: " + tree.getVertices()+"\t\t Status: "+ msg);
             message.setFont(Font.font(Font.getDefault().toString(), FontWeight.BOLD,20));
             return  message;
+        }
+    }
+    class ZoomableScrollPane extends ScrollPane {
+        private double scaleValue = 0.7;
+        private double zoomIntensity = 0.02;
+        private javafx.scene.Node target;
+        private javafx.scene.Node zoomNode;
+
+        public ZoomableScrollPane(javafx.scene.Node target) {
+            super();
+            this.target = target;
+            this.zoomNode = new Group(target);
+            setContent(outerNode(zoomNode));
+
+            setPannable(true);
+            setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+            setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+            setFitToHeight(true); //center
+            setFitToWidth(true); //center
+
+            updateScale();
+        }
+
+        private javafx.scene.Node outerNode(javafx.scene.Node node) {
+            javafx.scene.Node outerNode = centeredNode(node);
+            outerNode.setOnScroll(e -> {
+                e.consume();
+                onScroll(e.getTextDeltaY(), new Point2D(e.getX(), e.getY()));
+            });
+            return outerNode;
+        }
+
+        private javafx.scene.Node centeredNode(javafx.scene.Node node) {
+            VBox vBox = new VBox(node);
+            vBox.setAlignment(Pos.CENTER);
+            return vBox;
+        }
+
+        private void updateScale() {
+            target.setScaleX(scaleValue);
+            target.setScaleY(scaleValue);
+        }
+
+        private void onScroll(double wheelDelta, Point2D mousePoint) {
+            double zoomFactor = Math.exp(wheelDelta * zoomIntensity);
+
+            Bounds innerBounds = zoomNode.getLayoutBounds();
+            Bounds viewportBounds = getViewportBounds();
+
+            // calculate pixel offsets from [0, 1] range
+            double valX = this.getHvalue() * (innerBounds.getWidth() - viewportBounds.getWidth());
+            double valY = this.getVvalue() * (innerBounds.getHeight() - viewportBounds.getHeight());
+
+            scaleValue = scaleValue * zoomFactor;
+            updateScale();
+            this.layout(); // refresh ScrollPane scroll positions & target bounds
+
+            // convert target coordinates to zoomTarget coordinates
+            Point2D posInZoomTarget = target.parentToLocal(zoomNode.parentToLocal(mousePoint));
+
+            // calculate adjustment of scroll position (pixels)
+            Point2D adjustment = target.getLocalToParentTransform().deltaTransform(posInZoomTarget.multiply(zoomFactor - 1));
+
+            // convert back to [0, 1] range
+            // (too large/small values are automatically corrected by ScrollPane)
+            Bounds updatedInnerBounds = zoomNode.getBoundsInLocal();
+            this.setHvalue((valX + adjustment.getX()) / (updatedInnerBounds.getWidth() - viewportBounds.getWidth()));
+            this.setVvalue((valY + adjustment.getY()) / (updatedInnerBounds.getHeight() - viewportBounds.getHeight()));
         }
     }
 }
