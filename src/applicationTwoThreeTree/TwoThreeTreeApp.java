@@ -255,7 +255,7 @@ public class TwoThreeTreeApp extends Application{
             double treeHeight = tree.height();
             // make space for more nodes
             if(tree.height()>3){
-                this.setPrefSize((750*(1-Math.pow(0.5, treeHeight-1))/(0.5))+1500,1500);
+                this.setPrefSize(Math.pow(3,tree.height()-3)*1500,1500);
             }
             // display tree is root is not null
             if (tree.getRoot() != null){
