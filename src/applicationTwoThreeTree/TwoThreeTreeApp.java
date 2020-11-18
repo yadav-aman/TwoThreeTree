@@ -8,10 +8,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
@@ -59,10 +56,6 @@ public class TwoThreeTreeApp extends Application{
         Button find = new Button("Search");
         find.setStyle("-fx-background-color: #7982e3");
         find.setFont(Font.font(Font.getDefault().toString(), FontWeight.BOLD,10));
-
-        Button root = new Button("Root");
-        root.setStyle("-fx-background-color: #d83def");
-        root.setFont(Font.font(Font.getDefault().toString(), FontWeight.BOLD,10));
 
         Button clear = new Button("Clear");
         clear.setStyle("-fx-background-color: #f50606");
@@ -114,11 +107,6 @@ public class TwoThreeTreeApp extends Application{
             }
         });
 
-        root.setOnMouseClicked(e->{
-            scrollPane.setHvalue(scrollPane.getVmax()/2);
-            scrollPane.setVvalue(scrollPane.getHmin());
-        });
-
         clear.setOnMouseClicked(e->{
             tree.clear();
             viewTree.setPrefSize(1300,800);
@@ -156,7 +144,7 @@ public class TwoThreeTreeApp extends Application{
         enterKey.setFont(Font.font(Font.getDefault().toString(), FontWeight.BOLD,20));
         Label blankLabel = new Label();
         blankLabel.setPrefWidth(40);
-        controls.getChildren().addAll(enterKey,keyText,insert,delete,find,root,blankLabel,clear);
+        controls.getChildren().addAll(enterKey,keyText,insert,delete,find,blankLabel,clear);
         // set HBox to the top
         treePane.setTop(controls);
         // position status
@@ -174,7 +162,7 @@ public class TwoThreeTreeApp extends Application{
         // constructor
         DrawTree(Operations<Integer> tree){
             this.tree = tree;
-            this.setPrefSize(1300,800);
+            this.setPrefSize(1500,700);
         }
 
         //draw nodes
@@ -258,8 +246,14 @@ public class TwoThreeTreeApp extends Application{
             this.getChildren().clear();
             double treeHeight = tree.height();
             // make space for more nodes
-            if(tree.height()>3){
-                this.setPrefSize(Math.pow(3,tree.height()-3)*1500,1500);
+            if (treeHeight == 4){
+                this.setPrefSize(3500,1500);
+            }
+            else if (treeHeight == 5){
+                this.setPrefSize(7500,1500);
+            }
+            else if(treeHeight > 5){
+                this.setPrefSize(Math.pow(3,treeHeight-3)*1500,1500);
             }
             // display tree is root is not null
             if (tree.getRoot() != null){
@@ -308,7 +302,6 @@ public class TwoThreeTreeApp extends Application{
             setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
             setFitToHeight(true); //center
             setFitToWidth(true); //center
-
             updateScale();
         }
 
