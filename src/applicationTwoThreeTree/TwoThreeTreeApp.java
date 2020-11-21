@@ -297,7 +297,7 @@ public class TwoThreeTreeApp extends Application{
                 displayTree(n.getMidNode(),xCord+horizontalGap,yCord+verticalGap, horizontalGap/3,verticalGap+1*treeHeight,treeHeight, key);
             // recursive call to left sub-tree
             displayTree(n.getRightNode(),xCord+horizontalGap,yCord+verticalGap, horizontalGap/3,verticalGap+1*treeHeight,treeHeight, key);
-            // draw single sqaure node
+            // draw single square node
             if(n.is2Node()){
                 if(n.getLeftElement() != null)
                     draw2Node(n.getLeftElement().toString(),xCord,yCord,n.isLeaf(), horizontalGap, verticalGap, key);
