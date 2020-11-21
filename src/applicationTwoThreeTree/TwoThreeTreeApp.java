@@ -40,6 +40,7 @@ public class TwoThreeTreeApp extends Application{
         HBox controls = new HBox(10);
         // HBox for Height and vertices
         HBox status = new HBox();
+        status.getChildren().add(viewTree.updateMessage("Tree Created"));
         // text field to insert keys
         TextField keyText =new TextField();
         keyText.setPrefWidth(50);
@@ -63,8 +64,8 @@ public class TwoThreeTreeApp extends Application{
 
         insert.setOnMouseClicked(e->{
             try{
-                int key =Integer.parseInt(keyText.getText());
-                keyText.setText( key+5+"");
+                int key = Integer.parseInt(keyText.getText());
+                keyText.setText("");
                 boolean isExist = false;
                 if(!tree.isEmpty()){
                     isExist = tree.search(key);
@@ -72,13 +73,18 @@ public class TwoThreeTreeApp extends Application{
                 tree.add(key);
                 viewTree.displayTree(null);
                 status.getChildren().clear();
+                viewTree.displayTree(Integer.toString(key));
                 if(isExist)
+                {
                     status.getChildren().add(viewTree.updateMessage(key + " is already in the tree"));
-                else
-                    status.getChildren().add(viewTree.updateMessage(key + " is added"));
+                }
+                else{
+                    status.getChildren().add(viewTree.updateMessage(key + " is added in the tree"));
+                }
             }
             catch (NumberFormatException ex){
-                System.out.println("Wrong format provided");
+                status.getChildren().clear();
+                status.getChildren().add(viewTree.updateMessage("Wrong format provided"));
             }
         });
 
@@ -97,13 +103,14 @@ public class TwoThreeTreeApp extends Application{
                     viewTree.displayTree(null);
                     status.getChildren().clear();
                     if(isExist)
-                        status.getChildren().add(viewTree.updateMessage(key + " is deleted"));
+                        status.getChildren().add(viewTree.updateMessage("Deleted " +key));
                     else
                         status.getChildren().add(viewTree.updateMessage(key + " is not in the tree"));
                 }
             }
             catch (NumberFormatException ex){
-                System.out.println("Wrong format provided");
+                status.getChildren().clear();
+                status.getChildren().add(viewTree.updateMessage("Wrong format provided"));
             }
         });
 
@@ -132,7 +139,8 @@ public class TwoThreeTreeApp extends Application{
                 }
             }
             catch(NumberFormatException ex){
-                System.out.println("Wrong format provided");
+                status.getChildren().clear();
+                status.getChildren().add(viewTree.updateMessage("Wrong format provided"));
             }
         });
 
@@ -144,7 +152,7 @@ public class TwoThreeTreeApp extends Application{
         enterKey.setFont(Font.font(Font.getDefault().toString(), FontWeight.BOLD,20));
         Label blankLabel = new Label();
         blankLabel.setPrefWidth(40);
-        controls.getChildren().addAll(enterKey,keyText,insert,delete,find,blankLabel,clear);
+        controls.getChildren().addAll(enterKey,keyText,insert,find,delete,blankLabel,clear);
         // set HBox to the top
         treePane.setTop(controls);
         // position status
@@ -246,18 +254,18 @@ public class TwoThreeTreeApp extends Application{
             this.getChildren().clear();
             double treeHeight = tree.height();
             // make space for more nodes
-            if (treeHeight == 4){
+            if (treeHeight == 3){
                 this.setPrefSize(3500,1500);
             }
-            else if (treeHeight == 5){
+            else if (treeHeight == 4){
                 this.setPrefSize(7500,1500);
             }
-            else if(treeHeight > 5){
-                this.setPrefSize(Math.pow(3,treeHeight-3)*1500,1500);
+            else if(treeHeight > 4){
+                this.setPrefSize(Math.pow(3,treeHeight-2)*1500,1500);
             }
             // display tree is root is not null
             if (tree.getRoot() != null){
-                displayTree(tree.getRoot(),getWidth()/2,5,getWidth()/3, 150,treeHeight, key);
+                displayTree(tree.getRoot(),getWidth()/2,5,getWidth()/3, 150,treeHeight+1, key);
             }
         }
         private void displayTree(Node<Integer> n, double xCord, double yCord, double horizontalGap, double verticalGap,double treeHeight, String key){

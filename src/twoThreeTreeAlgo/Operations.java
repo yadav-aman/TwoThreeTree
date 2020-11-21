@@ -433,7 +433,7 @@ public class Operations<T extends Comparable<T>> {
                     if (current.leftElement.compareTo(element) == ROOT_IS_BIGGER) {
                         ifFound = search(current.leftChild, element);
 
-                    } else if (current.rightChild == null || current.rightElement.compareTo(element) == ROOT_IS_BIGGER) {
+                    } else if (current.rightChild == null || current.rightChild.leftElement == null || current.rightElement.compareTo(element) == ROOT_IS_BIGGER) {
                         ifFound = search(current.middleChild, element);
 
                     } else if (current.rightElement.compareTo(element) == ROOT_IS_SMALLER) {
@@ -585,7 +585,7 @@ public class Operations<T extends Comparable<T>> {
 
     // method to determine the height of the tree
     private int height(Node n){
-        int height = 0;
+        int height = -1;
         Node currentNode = n;
         while(currentNode != null){
             currentNode = currentNode.getLeftNode();
@@ -595,9 +595,9 @@ public class Operations<T extends Comparable<T>> {
     }
     // This is a public method to call height
     public int height() {
-        // return 0 for empty tree
+        // return -1 for empty tree
         if (isEmpty()){
-            return 0;
+            return -1;
         }
         // Return the height of the tree
         return height(root);
