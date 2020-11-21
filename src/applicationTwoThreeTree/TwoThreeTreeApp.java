@@ -62,6 +62,7 @@ public class TwoThreeTreeApp extends Application{
         clear.setStyle("-fx-background-color: #f50606");
         clear.setFont(Font.font(Font.getDefault().toString(), FontWeight.BOLD,10));
 
+        // insert button event
         insert.setOnMouseClicked(e->{
             try{
                 int key = Integer.parseInt(keyText.getText());
@@ -88,6 +89,7 @@ public class TwoThreeTreeApp extends Application{
             }
         });
 
+        // delete button event
         delete.setOnMouseClicked(e->{
             try{
                 int key =Integer.parseInt(keyText.getText());
@@ -103,7 +105,7 @@ public class TwoThreeTreeApp extends Application{
                     viewTree.displayTree(null);
                     status.getChildren().clear();
                     if(isExist)
-                        status.getChildren().add(viewTree.updateMessage("Deleted " +key));
+                        status.getChildren().add(viewTree.updateMessage("Deleted " + key));
                     else
                         status.getChildren().add(viewTree.updateMessage(key + " is not in the tree"));
                 }
@@ -114,14 +116,16 @@ public class TwoThreeTreeApp extends Application{
             }
         });
 
+        // clear button event
         clear.setOnMouseClicked(e->{
             tree.clear();
             viewTree.setPrefSize(1300,800);
             viewTree.displayTree(null);
             status.getChildren().clear();
-            status.getChildren().add(viewTree.updateMessage("Tree is cleared"));
+            status.getChildren().add(viewTree.updateMessage("Tree cleared"));
         });
 
+        // search button event
         find.setOnMouseClicked(e->{
             try {
                 String key = keyText.getText();
@@ -135,7 +139,7 @@ public class TwoThreeTreeApp extends Application{
                 else {
                     viewTree.displayTree(key);
                     status.getChildren().clear();
-                    status.getChildren().add(viewTree.updateMessage(key + " found"));
+                    status.getChildren().add(viewTree.updateMessage("Found " + key));
                 }
             }
             catch(NumberFormatException ex){
@@ -144,21 +148,24 @@ public class TwoThreeTreeApp extends Application{
             }
         });
 
-        // position controls
+        // position controls pane to top
         BorderPane.setMargin(controls,new Insets(15,15,15,15));
         controls.setAlignment(Pos.TOP_CENTER);
-        // add elements to HBox
+        // add elements to control pane
         Text enterKey = new Text("Enter Key: ");
         enterKey.setFont(Font.font(Font.getDefault().toString(), FontWeight.BOLD,20));
+        // blank label to provide some gap
         Label blankLabel = new Label();
-        blankLabel.setPrefWidth(40);
+        blankLabel.setPrefWidth(50);
         controls.getChildren().addAll(enterKey,keyText,insert,find,delete,blankLabel,clear);
-        // set HBox to the top
+        // set control HBox to the top of tree pane
         treePane.setTop(controls);
-        // position status
+        // position status HBox to the bottom of the tree pane
         status.setAlignment(Pos.BOTTOM_CENTER);
         treePane.setBottom(status);
+        // adding treePane to scene
         Scene scene = new Scene(treePane);
+        // setting scene on primary stage
         primaryStage.setScene(scene);
         // Show Stage
         primaryStage.show();
@@ -175,17 +182,21 @@ public class TwoThreeTreeApp extends Application{
 
         //draw nodes
         private void draw2Node(String key, double xCord, double yCord, boolean isLeaf, double horizontalGap,double verticalGap, String keyToCheck) {
+            // creating a square of size 50x50
             Rectangle box = new Rectangle(xCord, yCord, 50, 50);
+            // if searching then fill square colour to orange
             if (key.equals(keyToCheck)){
                 box.setFill(Color.DARKORANGE);
                 box.setStroke(Color.DARKRED);
             }
+            // normal boxes are green 
             else {
                 box.setFill(Color.LIGHTGREEN);
                 box.setStroke(Color.BLACK);
             }
             box.setArcHeight(15);
             box.setArcWidth(15);
+            // add number to the box
             Text keyText = new Text(xCord + 5,yCord + 38, key);
             keyText.setFill(Color.BLACK);
             keyText.setFont(Font.font(Font.getDefault().toString(), FontWeight.EXTRA_BOLD,25));
@@ -195,7 +206,7 @@ public class TwoThreeTreeApp extends Application{
                 getChildren().addAll(box,keyText);
             }
             else{
-                // if not leaf node then draw node and lines
+                // if not leaf node then draw node along with lines
                 Line leftLine = new Line(xCord,yCord+45,xCord - horizontalGap + 25,yCord+verticalGap);
                 Line rightLine = new Line(xCord+50,yCord+45,xCord + horizontalGap + 25,yCord+verticalGap);
                 leftLine.setStrokeWidth(4);
@@ -204,12 +215,16 @@ public class TwoThreeTreeApp extends Application{
             }
         }
         private void draw3Node(String key1, String key2, double xCord, double yCord, boolean isLeaf, double horizontalGap, double verticalGap, String keyToCheck){
+            // draw 2 rectangles of size 50x50
             Rectangle box1 = new Rectangle(xCord,yCord,50,50);
             Rectangle box2 = new Rectangle(xCord+50,yCord,50,50);
+            // if searching then fill square colour to orange
             if(key1.equals(keyToCheck)) {
                 box1.setFill(Color.DARKORANGE);
                 box1.setStroke(Color.DARKRED);
-            } else {
+            }
+            // normal boxes are green 
+            else {
                 box1.setFill(Color.LIGHTGREEN);
                 box1.setStroke(Color.BLACK);
             }
@@ -225,6 +240,7 @@ public class TwoThreeTreeApp extends Application{
             box2.setArcHeight(15);
             box2.setArcWidth(15);
 
+            // adding number to the square
             Text keyText1 = new Text(xCord + 5,yCord + 38, key1);
             keyText1.setFill(Color.BLACK);
             keyText1.setFont(Font.font(Font.getDefault().toString(), FontWeight.EXTRA_BOLD,25));
@@ -238,7 +254,7 @@ public class TwoThreeTreeApp extends Application{
                 this.getChildren().addAll(box1,box2,keyText1,keyText2);
             }
             else{
-                // if not leaf node then draw node and lines
+                // if not leaf node then draw node along with lines
                 Line leftLine = new Line(xCord,yCord+45,xCord - horizontalGap + 45,yCord+verticalGap);
                 Line rightLine = new Line(xCord+100,yCord+45,xCord+horizontalGap+25,yCord+verticalGap);
                 Line middleLine = new Line(xCord+50,yCord+50,xCord+50,yCord+verticalGap);
@@ -263,29 +279,36 @@ public class TwoThreeTreeApp extends Application{
             else if(treeHeight > 4){
                 this.setPrefSize(Math.pow(3,treeHeight-2)*1500,1500);
             }
-            // display tree is root is not null
+            // display tree if root is not null
             if (tree.getRoot() != null){
                 displayTree(tree.getRoot(),getWidth()/2,5,getWidth()/3, 150,treeHeight+1, key);
             }
         }
         private void displayTree(Node<Integer> n, double xCord, double yCord, double horizontalGap, double verticalGap,double treeHeight, String key){
+            // base condition 
             if(n == null)
                 return;
+            // recursive call to left sub-tree
             displayTree(n.getLeftNode(),xCord-horizontalGap,yCord+verticalGap, horizontalGap/3, verticalGap+1*treeHeight,treeHeight, key);
+            // recursive call to middle sub-tree
             if(n.getRightElement() != null)
                 displayTree(n.getMidNode(),xCord+25,yCord+verticalGap, horizontalGap/3, verticalGap+1*treeHeight,treeHeight, key);
             else
                 displayTree(n.getMidNode(),xCord+horizontalGap,yCord+verticalGap, horizontalGap/3,verticalGap+1*treeHeight,treeHeight, key);
+            // recursive call to left sub-tree
             displayTree(n.getRightNode(),xCord+horizontalGap,yCord+verticalGap, horizontalGap/3,verticalGap+1*treeHeight,treeHeight, key);
+            // draw single sqaure node
             if(n.is2Node()){
                 if(n.getLeftElement() != null)
                     draw2Node(n.getLeftElement().toString(),xCord,yCord,n.isLeaf(), horizontalGap, verticalGap, key);
             }
+            // draw double square node
             if(n.is3Node()){
                 draw3Node(n.getLeftElement().toString(),n.getRightElement().toString(),xCord,yCord,n.isLeaf(),horizontalGap,verticalGap, key);
             }
         }
 
+        // update status bar message
         public Text updateMessage(String msg){
             Text message = new Text("Height: " + tree.height() + ", Vertices: " + tree.getVertices()+"\t\t Status: "+ msg);
             message.setFont(Font.font(Font.getDefault().toString(), FontWeight.BOLD,20));
