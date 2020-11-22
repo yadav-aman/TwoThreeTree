@@ -1,7 +1,5 @@
 package twoThreeTreeAlgo;
 
-import java.awt.*;
-
 /**
  * Implements the "2-3-tree" data structure.
  * The structure stores elements in the form of a tree, but balanced.
