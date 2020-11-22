@@ -38,9 +38,11 @@ public class TwoThreeTreeApp extends Application{
         treePane.setCenter(scrollPane);
         // Create HBox for controls
         HBox controls = new HBox(10);
+        controls.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY,CornerRadii.EMPTY,Insets.EMPTY)));
         // HBox for Height and vertices
         HBox status = new HBox();
         status.getChildren().add(viewTree.updateMessage("Tree Created"));
+        status.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY,CornerRadii.EMPTY,Insets.EMPTY)));
         // text field to insert keys
         TextField keyText =new TextField();
         keyText.setPrefWidth(50);
@@ -72,9 +74,9 @@ public class TwoThreeTreeApp extends Application{
                     isExist = tree.search(key);
                 }
                 tree.add(key);
-                viewTree.displayTree(null);
+                viewTree.displayTree(null, null);
                 status.getChildren().clear();
-                viewTree.displayTree(Integer.toString(key));
+                viewTree.displayTree(Integer.toString(key), Color.BLUE);
                 if(isExist)
                 {
                     status.getChildren().add(viewTree.updateMessage(key + " is already in the tree"));
@@ -96,13 +98,13 @@ public class TwoThreeTreeApp extends Application{
                 keyText.setText("");
                 boolean isExist = tree.search(key);
                 if (tree.isEmpty()){
-                    viewTree.displayTree(null);
+                    viewTree.displayTree(null, null);
                     status.getChildren().clear();
                     status.getChildren().add(viewTree.updateMessage("Tree is empty"));
                 }
                 else{
                     tree.remove(key);
-                    viewTree.displayTree(null);
+                    viewTree.displayTree(null, null);
                     status.getChildren().clear();
                     if(isExist)
                         status.getChildren().add(viewTree.updateMessage("Deleted " + key));
@@ -120,7 +122,7 @@ public class TwoThreeTreeApp extends Application{
         clear.setOnMouseClicked(e->{
             tree.clear();
             viewTree.setPrefSize(1300,800);
-            viewTree.displayTree(null);
+            viewTree.displayTree(null, null);
             status.getChildren().clear();
             status.getChildren().add(viewTree.updateMessage("Tree cleared"));
         });
@@ -132,12 +134,12 @@ public class TwoThreeTreeApp extends Application{
                 keyText.setText("");
 
                 if (!tree.search(Integer.parseInt(key))) {
-                    viewTree.displayTree(null);
+                    viewTree.displayTree(null, null);
                     status.getChildren().clear();
                     status.getChildren().add(viewTree.updateMessage(key + " not found"));
                 }
                 else {
-                    viewTree.displayTree(key);
+                    viewTree.displayTree(key, Color.ORANGE);
                     status.getChildren().clear();
                     status.getChildren().add(viewTree.updateMessage("Found " + key));
                 }
@@ -181,12 +183,12 @@ public class TwoThreeTreeApp extends Application{
         }
 
         //draw nodes
-        private void draw2Node(String key, double xCord, double yCord, boolean isLeaf, double horizontalGap,double verticalGap, String keyToCheck) {
+        private void draw2Node(String key, double xCord, double yCord, boolean isLeaf, double horizontalGap,double verticalGap, String keyToCheck, Color color) {
             // creating a square of size 50x50
             Rectangle box = new Rectangle(xCord, yCord, 50, 50);
             // if searching then fill square colour to orange
             if (key.equals(keyToCheck)){
-                box.setFill(Color.DARKORANGE);
+                box.setFill(color);
                 box.setStroke(Color.DARKRED);
             }
             // normal boxes are green 
@@ -214,13 +216,13 @@ public class TwoThreeTreeApp extends Application{
                 getChildren().addAll(box,keyText,leftLine,rightLine);
             }
         }
-        private void draw3Node(String key1, String key2, double xCord, double yCord, boolean isLeaf, double horizontalGap, double verticalGap, String keyToCheck){
+        private void draw3Node(String key1, String key2, double xCord, double yCord, boolean isLeaf, double horizontalGap, double verticalGap, String keyToCheck, Color color){
             // draw 2 rectangles of size 50x50
             Rectangle box1 = new Rectangle(xCord,yCord,50,50);
             Rectangle box2 = new Rectangle(xCord+50,yCord,50,50);
             // if searching then fill square colour to orange
             if(key1.equals(keyToCheck)) {
-                box1.setFill(Color.DARKORANGE);
+                box1.setFill(color);
                 box1.setStroke(Color.DARKRED);
             }
             // normal boxes are green 
@@ -229,7 +231,7 @@ public class TwoThreeTreeApp extends Application{
                 box1.setStroke(Color.BLACK);
             }
             if(key2.equals(keyToCheck)) {
-                box2.setFill(Color.DARKORANGE);
+                box2.setFill(color);
                 box2.setStroke(Color.DARKRED);
             } else {
                 box2.setFill(Color.LIGHTGREEN);
@@ -265,7 +267,7 @@ public class TwoThreeTreeApp extends Application{
             }
         }
 
-        public void displayTree(String key){
+        public void displayTree(String key, Color color){
             // first clear the screen
             this.getChildren().clear();
             double treeHeight = tree.height();
@@ -281,30 +283,30 @@ public class TwoThreeTreeApp extends Application{
             }
             // display tree if root is not null
             if (tree.getRoot() != null){
-                displayTree(tree.getRoot(),getWidth()/2,5,getWidth()/3, 150,treeHeight+1, key);
+                displayTree(tree.getRoot(),getWidth()/2,5,getWidth()/3, 150,treeHeight+1, key, color);
             }
         }
-        private void displayTree(Node<Integer> n, double xCord, double yCord, double horizontalGap, double verticalGap,double treeHeight, String key){
+        private void displayTree(Node<Integer> n, double xCord, double yCord, double horizontalGap, double verticalGap,double treeHeight, String key, Color color){
             // base condition 
             if(n == null)
                 return;
             // recursive call to left sub-tree
-            displayTree(n.getLeftNode(),xCord-horizontalGap,yCord+verticalGap, horizontalGap/3, verticalGap+1*treeHeight,treeHeight, key);
+            displayTree(n.getLeftNode(),xCord-horizontalGap,yCord+verticalGap, horizontalGap/3, verticalGap+1*treeHeight,treeHeight, key, color);
             // recursive call to middle sub-tree
             if(n.getRightElement() != null)
-                displayTree(n.getMidNode(),xCord+25,yCord+verticalGap, horizontalGap/3, verticalGap+1*treeHeight,treeHeight, key);
+                displayTree(n.getMidNode(),xCord+25,yCord+verticalGap, horizontalGap/3, verticalGap+1*treeHeight,treeHeight, key, color);
             else
-                displayTree(n.getMidNode(),xCord+horizontalGap,yCord+verticalGap, horizontalGap/3,verticalGap+1*treeHeight,treeHeight, key);
+                displayTree(n.getMidNode(),xCord+horizontalGap,yCord+verticalGap, horizontalGap/3,verticalGap+1*treeHeight,treeHeight, key, color);
             // recursive call to left sub-tree
-            displayTree(n.getRightNode(),xCord+horizontalGap,yCord+verticalGap, horizontalGap/3,verticalGap+1*treeHeight,treeHeight, key);
+            displayTree(n.getRightNode(),xCord+horizontalGap,yCord+verticalGap, horizontalGap/3,verticalGap+1*treeHeight,treeHeight, key, color);
             // draw single square node
             if(n.is2Node()){
                 if(n.getLeftElement() != null)
-                    draw2Node(n.getLeftElement().toString(),xCord,yCord,n.isLeaf(), horizontalGap, verticalGap, key);
+                    draw2Node(n.getLeftElement().toString(),xCord,yCord,n.isLeaf(), horizontalGap, verticalGap, key, color);
             }
             // draw double square node
             if(n.is3Node()){
-                draw3Node(n.getLeftElement().toString(),n.getRightElement().toString(),xCord,yCord,n.isLeaf(),horizontalGap,verticalGap, key);
+                draw3Node(n.getLeftElement().toString(),n.getRightElement().toString(),xCord,yCord,n.isLeaf(),horizontalGap,verticalGap, key, color);
             }
         }
 
