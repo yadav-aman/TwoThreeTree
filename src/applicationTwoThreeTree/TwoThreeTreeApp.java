@@ -1,5 +1,6 @@
 package applicationTwoThreeTree;
 
+import javafx.animation.FillTransition;
 import javafx.application.Application;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
@@ -16,6 +17,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import twoThreeTreeAlgo.Node;
 import twoThreeTreeAlgo.Operations;
 
@@ -182,13 +184,27 @@ public class TwoThreeTreeApp extends Application{
             this.setPrefSize(1500,700);
         }
 
+        //function for node animation
+        public void nodeAnimation(Rectangle box, Color initialColor, Color finalColor){
+            FillTransition fill = new FillTransition();
+
+            fill.setAutoReverse(true);
+            fill.setCycleCount(50);
+            fill.setDelay(Duration.seconds(0));
+            fill.setDuration(Duration.seconds(0.5));
+            fill.setFromValue(initialColor);
+            fill.setToValue(finalColor);
+            fill.setShape(box);
+            fill.play();
+        }
+
         // drawing single nodes
         private void draw2Node(String key, double xCord, double yCord, boolean isLeaf, double horizontalGap,double verticalGap, String keyToCheck, Color color) {
             // creating a square of size 50x50
             Rectangle box = new Rectangle(xCord, yCord, 50, 50);
             // if searching then fill square colour to orange
             if (key.equals(keyToCheck)){
-                box.setFill(color);
+                nodeAnimation(box, Color.LIGHTGREEN, color);
             }
             // normal boxes are green 
             else {
@@ -223,7 +239,7 @@ public class TwoThreeTreeApp extends Application{
             Rectangle box2 = new Rectangle(xCord+50,yCord,50,50);
             // if searching then fill square color to orange, if element already present then set color to light blue
             if(key1.equals(keyToCheck)) {
-                box1.setFill(color);
+                nodeAnimation(box1, Color.LIGHTGREEN, color);
             }
             // normal boxes are green 
             else {
@@ -231,7 +247,7 @@ public class TwoThreeTreeApp extends Application{
             }
             // similarly for second box
             if(key2.equals(keyToCheck)) {
-                box2.setFill(color);
+                nodeAnimation(box2, Color.LIGHTGREEN, color);
             }
             else {
                 box2.setFill(Color.LIGHTGREEN);
